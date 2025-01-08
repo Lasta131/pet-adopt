@@ -89,7 +89,7 @@ export default function AddNewPet() {
         image: image || '', // Optional image field
         createdAt: new Date().toISOString(),
       };
-
+      console.log(newPet);
       await addDoc(petsCollectionRef, newPet);
 
       ToastAndroid.show('Pet added successfully!', ToastAndroid.SHORT);

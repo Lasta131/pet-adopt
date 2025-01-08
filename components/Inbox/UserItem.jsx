@@ -1,9 +1,10 @@
 import { View, Text,Image } from 'react-native'
 import React from 'react'
+import { Link } from 'expo-router'
 
 export default function UserItem({userInfo}) {
   return (
-    <View> 
+    <Link href={'/chat?id='+userInfo.docId}> 
     <View style={{
         marginVertical:7,
         display:'flex',
@@ -28,6 +29,6 @@ export default function UserItem({userInfo}) {
         borderWidth:0.2,marginVertical:5,borderColor:'grey'
     }}>
     </View>
-    </View>
+    </Link>
   )
 }

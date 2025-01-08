@@ -50,8 +50,8 @@ setLoader(false)
       }}>Inbox</Text>
       <FlatList
       data={MapOtherUserList()}
-      rehreshing={GetUserList}
-      onRefresh={loader}
+      refreshing={loader}
+      onRefresh={GetUserList}
       style={{
         marginTop:20
       }}
