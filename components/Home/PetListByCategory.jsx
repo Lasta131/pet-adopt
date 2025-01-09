@@ -26,7 +26,7 @@ export default function PetListByCategory() {
       const pets = [];
       
       querySnapshot.forEach((doc) => {
-        // console.log('ghf');
+        console.log(doc.data());
         
         const petData = doc.data();
         // console.log('Fetched Pet:', petData); // Log fetched pet data

@@ -1,11 +1,11 @@
-import { 
-  View, 
-  Text, 
-  Image, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Pressable, 
-  ToastAndroid 
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  ToastAndroid
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from 'expo-router';
@@ -18,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 export default function AddNewPet() {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    category: 'Dogs',
+    Category: 'Dogs',
     sex: 'Male',
     name: '',
     breed: '',
@@ -31,6 +31,7 @@ export default function AddNewPet() {
   const [categoryList, setCategoryList] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('Dogs');
   const [image, setImage] = useState();
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   useEffect(() => {
     navigation.setOptions({
@@ -74,13 +75,17 @@ export default function AddNewPet() {
 
   // Submit form data to Firestore
   const onSubmit = async () => {
-    const requiredFields = ['name', 'category', 'breed', 'age', 'sex', 'weight', 'address', 'about'];
+    if (isLoading) return; // Prevent form submission if already in progress
+
+    const requiredFields = ['name', 'Category', 'breed', 'age', 'sex', 'weight', 'address', 'about'];
     const isFormValid = requiredFields.every((field) => formData[field] && formData[field].trim() !== '');
 
     if (!isFormValid) {
       ToastAndroid.show('Enter All Details', ToastAndroid.SHORT);
       return;
     }
+
+    setIsLoading(true); // Set loading to true
 
     try {
       const petsCollectionRef = collection(db, 'Pets');
@@ -103,6 +108,8 @@ export default function AddNewPet() {
     } catch (error) {
       console.error('Error adding document:', error);
       ToastAndroid.show('Failed to add pet. Try again.', ToastAndroid.SHORT);
+    } finally {
+      setIsLoading(false); // Reset loading state after the operation
     }
   };
 
@@ -198,8 +205,13 @@ export default function AddNewPet() {
           onChangeText={(value) => handleInputChange('about', value)}
         />
       </View>
-      <TouchableOpacity style={styles.button} onPress={onSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
+      {/* Disable button while loading */}
+      <TouchableOpacity 
+        style={[styles.button, isLoading && { backgroundColor: '#B5B5B5' }]} 
+        onPress={onSubmit}
+        disabled={isLoading}
+      >
+        <Text style={styles.buttonText}>{isLoading ? 'Submitting...' : 'Submit'}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

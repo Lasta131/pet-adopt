@@ -4,6 +4,8 @@ import Shared from '@/Shared/Shared'
 import { useUser } from '@clerk/clerk-expo';
 import { FlatList } from 'react-native';
 import PetListItem from '@/components/Home/PetListItem'
+import { collection, query, getDocs,where } from 'firebase/firestore';
+import { db } from '@/config/FirebaseConfig';
 
 export default function Favorite() {
   const { user } = useUser();
@@ -22,7 +24,7 @@ export default function Favorite() {
     setLoader(true);
     const result = await Shared.GetFavList(user);
     setFavIds(result?.favorites);
-    setLoader(false);
+    setLoader(false);                   
     GetFavPetList(result?.favorites);
   }
 
@@ -31,14 +33,18 @@ export default function Favorite() {
     setLoader(true);
     setFavPetList([]);
     try {
+    console.log(favId_);
+
       const q = query(collection(db, 'Pets'), where('id', 'in', favId_));
       const querySnapshot = await getDocs(q);
+      console.log('kjh');
       querySnapshot.forEach((doc) => {
+        
         console.log(doc.data());
         setFavPetList(prev => [...prev, doc.data()]);
       });
     } catch (error) {
-      // console.error("Error fetching favorite pets: ", error);
+      console.error("Error fetching favorite pets: ", error);
     }
     setLoader(false);
   }
